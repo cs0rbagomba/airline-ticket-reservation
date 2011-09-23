@@ -16,38 +16,18 @@ AirPlaneWidget::AirPlaneWidget(QWidget *parent) :
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumSize(500, 500);
 
-    /// @todo Do it in a loop
-    Seat *seat = new Seat(this);
-    m_scene->addItem(seat);
-    seat->setPos(-20, -60);
+    for (int coloumn = 0; coloumn < 4; coloumn++) {
+        for (int row = 0; row < 10; row++) {
 
-    Seat *seat1 = new Seat(this, true);
-    m_scene->addItem(seat1);
-    seat1->setPos(-20, -20);
+            Seat *seat = new Seat(this);
+            m_scene->addItem(seat);
+            m_seats.append(seat);
+            seat->setPos(-40 + coloumn * 22, -80 + row * 22);
 
-    Seat *seat2 = new Seat(this, true);
-    m_scene->addItem(seat2);
-    seat2->setPos(-20, 20);
+            connect(seat, SIGNAL(clicked()), this, SLOT(changed()));
+        }
+    }
 
-    Seat *seat3 = new Seat(this);
-    m_scene->addItem(seat3);
-    seat3->setPos(-20, 60);
-
-    Seat *seat4 = new Seat(this, true);
-    m_scene->addItem(seat4);
-    seat4->setPos(20, -60);
-
-    Seat *seat5 = new Seat(this);
-    m_scene->addItem(seat5);
-    seat5->setPos(20, -20);
-
-    Seat *seat6 = new Seat(this);
-    m_scene->addItem(seat6);
-    seat6->setPos(20, 20);
-
-    Seat *seat7 = new Seat(this, true);
-    m_scene->addItem(seat7);
-    seat7->setPos(20, 60);
 }
 
 AirPlaneWidget::~AirPlaneWidget()
@@ -64,4 +44,10 @@ void AirPlaneWidget::drawBackground(QPainter *painter, const QRectF &rect)
     painter->fillRect(m_scene->sceneRect(), AirPlaneWidget::m_paperColor);
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(m_scene->sceneRect());
+}
+
+void AirPlaneWidget::changed()
+{
+    /// @todo pass the seat
+    qDebug("one seat is changed");
 }

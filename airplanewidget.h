@@ -6,6 +6,8 @@
 
 #include "seat.h"
 
+class Seat;
+
 class AirPlaneWidget : public QGraphicsView
 {
     Q_OBJECT
@@ -18,9 +20,14 @@ protected:
 
     void drawBackground(QPainter *painter, const QRectF &rect);
 
+public slots:
+
+    void changed();
+
 private:
 
     QGraphicsScene *m_scene;
+    QList<Seat*> m_seats;
 
     static const QColor m_paperColor;
 };
