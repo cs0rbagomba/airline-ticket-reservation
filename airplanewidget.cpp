@@ -15,6 +15,21 @@ AirPlaneWidget::AirPlaneWidget(QWidget *parent) :
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumSize(500, 500);
+
+    // virsli
+    Seat *seat = new Seat(this);
+    m_scene->addItem(seat);
+    seat->setPos(0,0);
+
+    Seat *seat1 = new Seat(this);
+    m_scene->addItem(seat1);
+    seat1->setPos(40,0);
+
+    Seat *seat2 = new Seat(this);
+    m_scene->addItem(seat2);
+    seat2->setPos(0,40);
+
+
 }
 
 AirPlaneWidget::~AirPlaneWidget()

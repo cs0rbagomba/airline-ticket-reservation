@@ -6,17 +6,17 @@
 
 QT       += core gui
 
-TARGET = airline_seat_allocation
+TARGET   = airline_seat_allocation
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    airplanewidget.cpp
+        airplanewidget.cpp \
+        seat.cpp
 
 HEADERS  += mainwindow.h \
-    airplanewidget.h
+         airplanewidget.h \
+         seat.h
 
 FORMS    += mainwindow.ui
-
-

@@ -4,6 +4,8 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
+#include "seat.h"
+
 class AirPlaneWidget : public QGraphicsView
 {
     Q_OBJECT
