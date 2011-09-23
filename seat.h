@@ -1,19 +1,21 @@
 #ifndef SEAT_H
 #define SEAT_H
 
-#include <QGraphicsTextItem>
+#include <QGraphicsItem>
 
 #include "airplanewidget.h"
 
 class AirPlaneWidget;
 
-class Seat : public QGraphicsTextItem
+class Seat : public QGraphicsItem
 {
-    Q_OBJECT
-
 public:
-    explicit Seat(AirPlaneWidget *airPlaneWidget = 0);
+    explicit Seat(AirPlaneWidget *airPlaneWidget = 0,
+                  const bool taken = false);
     ~Seat();
+
+    bool taken() const;
+    void setTaken(const bool taken = true);
 
 protected:
 
@@ -21,8 +23,13 @@ protected:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);
 
+    QRectF boundingRect() const;
+
+    void mousePressEvent (QGraphicsSceneMouseEvent * event);
+
 private:
     AirPlaneWidget *m_airPlaneWidget;
+    bool m_taken;
 };
 
 #endif // SEAT_H
