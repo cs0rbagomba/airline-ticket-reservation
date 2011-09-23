@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "airplanewidget.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -16,7 +18,8 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *m_ui;
+    AirPlaneWidget *m_airPlaneWidget;
 };
 
 #endif // MAINWINDOW_H

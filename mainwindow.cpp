@@ -3,12 +3,15 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    m_ui(new Ui::MainWindow),
+    m_airPlaneWidget(new AirPlaneWidget(this))
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
+
+    setCentralWidget(m_airPlaneWidget);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_ui;
 }
