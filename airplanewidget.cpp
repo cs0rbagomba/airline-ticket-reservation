@@ -16,7 +16,7 @@ AirPlaneWidget::AirPlaneWidget(QWidget *parent) :
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumSize(500, 500);
 
-    // virsli
+    /// @todo Do it in a loop
     Seat *seat = new Seat(this);
     m_scene->addItem(seat);
     seat->setPos(-20, -60);
@@ -58,6 +58,8 @@ AirPlaneWidget::~AirPlaneWidget()
 void AirPlaneWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_UNUSED(rect);
+
+    /// @todo draw a real airplane
 
     painter->fillRect(m_scene->sceneRect(), AirPlaneWidget::m_paperColor);
     painter->setBrush(Qt::NoBrush);

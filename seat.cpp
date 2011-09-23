@@ -23,7 +23,8 @@ bool Seat::taken() const
 void Seat::setTaken(const bool taken)
 {
     m_taken = taken;
-    setAcceptHoverEvents(taken);
+    setAcceptHoverEvents(!taken);
+    update();
 }
 
 void Seat::paint(QPainter *painter,
@@ -44,12 +45,14 @@ void Seat::paint(QPainter *painter,
         }
     }
 
-
+    /// @todo draw a seat-like box
     painter->drawEllipse(-7, -7, 20, 20);
 }
 
 QRectF Seat::boundingRect() const
 {
+
+    /// @todo adjust after paint() is rewritten
     qreal adjust = 2;
     return QRectF(-10 - adjust, -10 - adjust,
                    23 + adjust, 23 + adjust);
@@ -59,5 +62,6 @@ void Seat::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_UNUSED(event);
 
-    qDebug("klikk");
+    setTaken(!m_taken);
+    emit clicked();
 }
