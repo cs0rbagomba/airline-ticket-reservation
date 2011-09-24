@@ -63,5 +63,5 @@ void Seat::mousePressEvent(QGraphicsSceneMouseEvent *event)
     Q_UNUSED(event);
 
     setTaken(!m_taken);
-    emit clicked();
+    emit clicked(this);
 }

@@ -21,6 +21,7 @@ public:
     bool taken() const;
     void setTaken(const bool taken = true);
 
+
 protected:
 
     void paint(QPainter *painter,
@@ -29,11 +30,11 @@ protected:
 
     QRectF boundingRect() const;
 
-    void mousePressEvent (QGraphicsSceneMouseEvent * event);
+    void mousePressEvent (QGraphicsSceneMouseEvent *event);
 
 signals:
 
-    void clicked();
+    void clicked(Seat*);
 
 private:
 
