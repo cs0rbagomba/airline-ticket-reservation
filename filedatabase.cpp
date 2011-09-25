@@ -73,6 +73,7 @@ bool FileDataBase::readData(const QString id, bool &taken)
 
         // listen to modifications
         m_watcher.addPath(m_filePath);
+
         connect(&m_watcher, SIGNAL(fileChanged(const QString&)),
                 this, SLOT(fileModified(const QString&)));
     }
@@ -88,18 +89,12 @@ bool FileDataBase::readData(const QString id, bool &taken)
 
 void FileDataBase::fileModified(const QString& path)
 {
-     if (path != m_filePath) {
-        qFatal("This is not happening");
-    }
+    Q_UNUSED(path)
 
-    qDebug("changed");
-
-    /// @todo calculate diffs
-//    QString id = ...
-//    emit dataChanged(id);
+    loadData(true);
 }
 
-bool FileDataBase::loadData()
+bool FileDataBase::loadData(const bool calculateDiff)
 {
     QFile file(m_filePath);
 
@@ -129,7 +124,20 @@ bool FileDataBase::loadData()
     for (unsigned int i = 0; i < nodes.length(); i++) {
         QDomElement e = nodes.item(i).toElement();
         if(!e.isNull()) {
-            m_seats[e.attribute("id")] = e.attribute("taken")== "1" ? 1 : 0;
+
+            QString id(e.attribute("id"));
+            bool taken(e.attribute("taken") == "1" ? true : false);
+
+            if (calculateDiff) {
+                if (m_seats.find(id) == m_seats.end() || m_seats[id] != taken) {
+
+                    // value has to be set before emitting the signal
+                    m_seats[id] = taken;
+                    emit dataChanged(id);
+                }
+            } else {
+                m_seats[id] = taken;
+            }
         }
     }
 

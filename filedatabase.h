@@ -8,6 +8,8 @@
 
 class FileDataBase : public DataBase
 {
+    Q_OBJECT
+
 public:
 
     explicit FileDataBase(const QString filePath);
@@ -27,7 +29,7 @@ private slots:
 
 private:
 
-    bool loadData();
+    bool loadData(const bool calculateDiff = false);
     bool initFile();
 
 

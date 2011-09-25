@@ -22,7 +22,7 @@ public:
 signals:
 
     void dataChanged(QString id);
-    void  notification(const QString msg);
+    void notification(const QString msg);
 
 };
 
