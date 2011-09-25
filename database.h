@@ -11,10 +11,13 @@ public:
     explicit DataBase(QObject *parent = 0);
     ~DataBase();
 
-    bool writeData(const QString id,
-                   const bool taken);
+    // write data to DB, return true on success
+    virtual bool writeData(const QString id,
+                           const bool taken) = 0;
 
-    bool readData(const QString id) const;
+    // read data from DB, return true on success
+    virtual bool readData(const QString id,
+                          bool &taken) = 0;
 
 signals:
 

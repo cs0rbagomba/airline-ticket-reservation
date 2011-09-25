@@ -18,6 +18,7 @@ MainWindow::MainWindow(DataBase *db) :
 MainWindow::~MainWindow()
 {
     delete m_ui;
+    delete m_database;
 }
 
 void MainWindow::statusBarMsg(const QString msg)

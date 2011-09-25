@@ -20,6 +20,7 @@ AirPlaneWidget::AirPlaneWidget(QWidget *parent,
 
     drawAirPlane();
 
+    // signal from DB - data has been modified from outside
     connect(m_dataBase, SIGNAL(dataChanged(QString)),
             this, SLOT(seatChanged(QString)) );
 }
@@ -57,12 +58,19 @@ void AirPlaneWidget::seatChanged(Seat *seat)
     }
 }
 
+// signal from DB - data has been modified from outside
 void AirPlaneWidget::seatChanged(QString id)
 {
     QString msg = QString("Seat %1 has been changed - from DataBase").arg(id);
     emit notification(msg);
 
-    m_seats[id]->setTaken(m_dataBase->readData(id));
+    bool taken;
+    if (!(m_dataBase->readData(id,taken))) {
+        msg.append(" - read error!");
+        emit notification(msg);
+    } else {
+        m_seats[id]->setTaken(taken);
+    }
 }
 
 void AirPlaneWidget::drawAirPlane()
@@ -76,7 +84,15 @@ void AirPlaneWidget::drawAirPlane()
             QString id(rowAndColumnToId(row,column));
             m_seats[id] = seat;
             seat->setPos(-40 + column * 22, -80 + row * 22);
-            seat->setTaken(m_dataBase->readData(id));
+
+            // read state from DB
+            bool taken;
+            if (!(m_dataBase->readData(id,taken))) {
+                QString error = QString ("Database read error!");
+                emit notification(error);
+            } else {
+                m_seats[id]->setTaken(taken);
+            }
 
             connect(seat, SIGNAL(clicked(Seat*)),
                     this, SLOT(seatChanged(Seat*)));
