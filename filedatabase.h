@@ -15,11 +15,11 @@ public:
     explicit FileDataBase(const QString filePath);
     ~FileDataBase();
 
-    // write data to DB, return true on success
+    // implements DataBase::writeData
     bool writeData(const QString id,
                    const bool taken);
 
-    // read data from DB, return true on success
+    // implements DataBase::readData
     bool readData(const QString id,
                   bool &taken);
 

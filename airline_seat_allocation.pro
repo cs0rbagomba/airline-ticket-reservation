@@ -17,12 +17,14 @@ SOURCES +=  main.cpp \
             airplanewidget.cpp \
             seat.cpp \
             database.cpp \
-            filedatabase.cpp
+            filedatabase.cpp \
+            mysqldatabase.cpp
 
 HEADERS  += mainwindow.h \
             airplanewidget.h \
             seat.h \
             database.h \
-            filedatabase.h
+            filedatabase.h \
+            mysqldatabase.h
 
 FORMS    += mainwindow.ui
