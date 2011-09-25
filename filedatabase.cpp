@@ -30,23 +30,25 @@ bool FileDataBase::writeData(const QString id, const bool taken)
     // update DomDocument
     QDomElement docElem = m_domDoc.documentElement();
     QDomNodeList nodes = docElem.childNodes();
-    bool found(false);
+
+    // remove node it exists
+    /// @note smartness needed: can I modify existing ones?
+    int found(-1);
     for (unsigned int i = 0; i < nodes.length(); i++) {
         QDomElement e = nodes.item(i).toElement();
         if(!e.isNull() && e.attribute("id") == id) {
-
-            /// @bug element is not updated
-            e.attribute("taken") = taken;
-            found = true;
+            found = i;
         }
     }
-
-    if (!found) {
-        QDomElement cn = m_domDoc.createElement("seat");
-        cn.setAttribute( "id", id);
-        cn.setAttribute( "taken", taken);
-        docElem.appendChild(cn);
+    if (found != -1) {
+        docElem.removeChild(nodes.item(found));
     }
+
+    // add node
+    QDomElement cn = m_domDoc.createElement("seat");
+    cn.setAttribute( "id", id);
+    cn.setAttribute( "taken", taken);
+    docElem.appendChild(cn);
 
     // write back DomDocument to file
     QFile file(m_filePath);
