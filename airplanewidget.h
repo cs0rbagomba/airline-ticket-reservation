@@ -34,10 +34,7 @@ signals:
 private:
 
     void drawAirPlane();
-
     QString idOfSeat(const Seat *seat) const;
-    QString rowAndColumnToId(const int row,
-                             const int column) const;
 
     QGraphicsScene *m_scene;
     QMap<QString, Seat*> m_seats;

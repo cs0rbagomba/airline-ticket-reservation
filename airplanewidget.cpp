@@ -9,14 +9,14 @@ AirPlaneWidget::AirPlaneWidget(QWidget *parent,
     m_dataBase(db)
 {
     m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    m_scene->setSceneRect(-200, -200, 400, 400);
+    m_scene->setSceneRect(-100, -350, 300, 550);
     setScene(m_scene);
 
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    setMinimumSize(500, 500);
+    setMinimumSize(400, 600);
 
     drawAirPlane();
 
@@ -45,7 +45,8 @@ void AirPlaneWidget::seatChanged(Seat *seat)
 {
     QString id(idOfSeat(seat));
 
-    QString msg = QString("Seat %1 has been changed").arg(id);
+    QString msg = QString("Seat %1 has been ").arg(id);
+    msg.append(seat->taken() ? "reserved" : "cancelled");
     emit notification(msg);
 
     if (!m_dataBase->writeData(id, seat->taken())) {
@@ -70,15 +71,48 @@ void AirPlaneWidget::seatChanged(QString id)
 
 void AirPlaneWidget::drawAirPlane()
 {
-    for (int column = 0; column < 4; column++) {
-        for (int row = 0; row < 10; row++) {
+    // print help text
+    QGraphicsTextItem *helpText = new QGraphicsTextItem(0);
+    m_scene->addItem(helpText);
+    helpText->setDefaultTextColor(Qt::black);
+    helpText->setPlainText("'Ctrl' + click to cancel reservation");
+    helpText->setPos(-80, -330);
 
+    for (int column = 0; column < 6; column++) {
+
+        // print column letters: a,b,c d,e,f
+        QGraphicsTextItem *columnLetter = new QGraphicsTextItem(0);
+        m_scene->addItem(columnLetter);
+        columnLetter->setDefaultTextColor(Qt::black);
+        columnLetter->setPlainText(QString(QChar(column+97)));
+        qreal x(-16 + column * 23);
+        if (column > 2 ) {
+            x += 28;
+        }
+        columnLetter->setPos(x, -280);
+
+        for (int row = 0; row < 20; row++) {
+
+            // print row numbers
+            QGraphicsTextItem *rowNumber = new QGraphicsTextItem(0);
+            m_scene->addItem(rowNumber);
+            rowNumber->setDefaultTextColor(Qt::black);
+            rowNumber->setPlainText(QString(" %1").arg(row+1,2));
+            rowNumber->setPos(-50, -257 + row * 22);
+
+            // draw seats
             Seat *seat = new Seat(this);
             m_scene->addItem(seat);
 
-            QString id(rowAndColumnToId(row,column));
+            QString id(QString("%1%2").arg(row+1).arg(QChar(97+column)));
             m_seats[id] = seat;
-            seat->setPos(-40 + column * 22, -80 + row * 22);
+
+            qreal x(-10 + column * 22);
+            if (column > 2 ) {
+                x += 30;
+            }
+            qreal y(-250 + row * 22);
+            seat->setPos(x,y);
 
             // read state from DB
             bool taken;
@@ -105,13 +139,4 @@ QString AirPlaneWidget::idOfSeat(const Seat *seat) const
 
     // impossible
     return QString("Seat not found");
-}
-
-QString AirPlaneWidget::rowAndColumnToId(const int row, const int column) const
-{
-    // ASCII code of 'a' is 97
-    QChar c(column+97);
-
-    // the numbers of rows shall start from 1 not from 0
-    return QString("%1%2").arg(row+1).arg(c);
 }

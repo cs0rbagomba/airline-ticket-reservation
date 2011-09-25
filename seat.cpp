@@ -1,6 +1,8 @@
 #include "seat.h"
 
 #include <QStyleOption>
+#include <QMessageBox>
+#include <QApplication>
 
 Seat::Seat(AirPlaneWidget *airPlaneWidget,
            const bool taken) :
@@ -45,23 +47,43 @@ void Seat::paint(QPainter *painter,
         }
     }
 
-    /// @todo draw a seat-like box
-    painter->drawEllipse(-7, -7, 20, 20);
+    painter->drawRect(QRect(-7,-7,20,20));
 }
 
 QRectF Seat::boundingRect() const
 {
-
-    /// @todo adjust after paint() is rewritten
-    qreal adjust = 2;
-    return QRectF(-10 - adjust, -10 - adjust,
-                   23 + adjust, 23 + adjust);
+    return QRectF(-7,-7,20,20);
 }
 
 void Seat::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_UNUSED(event);
 
-    setTaken(!m_taken);
+    if (m_taken) {
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+
+            QMessageBox dialog(m_airPlaneWidget);
+            dialog.setText("Really cancel reservation?");
+            dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            dialog.setDefaultButton(QMessageBox::No);
+            int ret = dialog.exec();
+            switch (ret) {
+                case QMessageBox::Yes:
+                    // Save was clicked
+                    setTaken(false);
+                    emit clicked(this);
+                    return;
+                case QMessageBox::No:
+                    // Don't Save was clicked
+                    return;
+                default:
+                    // should never be reached
+                    return;
+             }
+        } else {
+            return;
+        }
+    }
+    setTaken(true);
     emit clicked(this);
 }
