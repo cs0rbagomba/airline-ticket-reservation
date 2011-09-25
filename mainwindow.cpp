@@ -13,6 +13,9 @@ MainWindow::MainWindow(DataBase *db) :
 
     connect(m_airPlaneWidget, SIGNAL(notification(QString)),
             this, SLOT(statusBarMsg(QString)));
+
+    connect(m_database, SIGNAL(notification(QString)),
+            this, SLOT(statusBarMsg(QString)));
 }
 
 MainWindow::~MainWindow()

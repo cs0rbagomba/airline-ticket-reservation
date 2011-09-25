@@ -23,7 +23,7 @@ public:
 
 private slots:
 
-    void fileModified();
+    void fileModified(const QString&);
 
 private:
 

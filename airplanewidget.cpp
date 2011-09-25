@@ -48,12 +48,8 @@ void AirPlaneWidget::seatChanged(Seat *seat)
     QString msg = QString("Seat %1 has been changed").arg(id);
     emit notification(msg);
 
-    /// @todo handle seat reservation
     if (!m_dataBase->writeData(id, seat->taken())) {
-        QString error = QString("Couldn't reserve seat %1 - DataBase error.").arg(id);
-        emit notification(error);
-
-        // reverse state
+        // Couldn't reserve seat, reverse state
         seat->setTaken(!(seat->taken()));
     }
 }
@@ -66,8 +62,7 @@ void AirPlaneWidget::seatChanged(QString id)
 
     bool taken;
     if (!(m_dataBase->readData(id,taken))) {
-        msg.append(" - read error!");
-        emit notification(msg);
+        // Database read error, leaving the seat as it is
     } else {
         m_seats[id]->setTaken(taken);
     }
@@ -88,8 +83,8 @@ void AirPlaneWidget::drawAirPlane()
             // read state from DB
             bool taken;
             if (!(m_dataBase->readData(id,taken))) {
-                QString error = QString ("Database read error!");
-                emit notification(error);
+                // Database read error
+                m_seats[id]->setTaken(false);
             } else {
                 m_seats[id]->setTaken(taken);
             }

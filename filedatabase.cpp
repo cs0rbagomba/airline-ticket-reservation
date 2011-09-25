@@ -4,7 +4,7 @@ FileDataBase::FileDataBase(const QString filePath) :
     m_filePath(filePath),
     m_fileIsLoaded(false),
     m_domDoc("AirLine_Seat_Allocation"),
-    m_watcher(QStringList(filePath))
+    m_watcher()
 {
 
 }
@@ -34,6 +34,8 @@ bool FileDataBase::writeData(const QString id, const bool taken)
     for (unsigned int i = 0; i < nodes.length(); i++) {
         QDomElement e = nodes.item(i).toElement();
         if(!e.isNull() && e.attribute("id") == id) {
+
+            /// @bug element is not updated
             e.attribute("taken") = taken;
             found = true;
         }
@@ -49,7 +51,7 @@ bool FileDataBase::writeData(const QString id, const bool taken)
     // write back DomDocument to file
     QFile file(m_filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        // emit notification(tr("Couldn't open file to write."));
+        emit notification("Couldn't open file to write.");
         return false;
     }
     QTextStream ts( &file );
@@ -66,6 +68,11 @@ bool FileDataBase::readData(const QString id, bool &taken)
         if (!loadData()) {
             return false;
         }
+
+        // listen to modifications
+        m_watcher.addPath(m_filePath);
+        connect(&m_watcher, SIGNAL(fileChanged(const QString&)),
+                this, SLOT(fileModified(const QString&)));
     }
 
     if (m_seats.find(id) != m_seats.end()) {
@@ -73,12 +80,21 @@ bool FileDataBase::readData(const QString id, bool &taken)
         return true;
     }
 
+    /// @note Or return writeData(id,taken) ?
     return false;
 }
 
-void FileDataBase::fileModified()
+void FileDataBase::fileModified(const QString& path)
 {
+     if (path != m_filePath) {
+        qFatal("This is not happening");
+    }
 
+    qDebug("changed");
+
+    /// @todo calculate diffs
+//    QString id = ...
+//    emit dataChanged(id);
 }
 
 bool FileDataBase::loadData()
@@ -87,17 +103,19 @@ bool FileDataBase::loadData()
 
     // open file
     if (!file.exists()) {
-        initFile();
+        if (!initFile()) {
+            return false;
+        }
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
-        // emit notification("Couldn't read file.");
+        emit notification("Couldn't read file.");
         return false;
     }
 
     // load DomDoc
     if (!m_domDoc.setContent(&file)) {
-        // emit notification("Couldn't parse XML file.");
+        emit notification("Couldn't parse XML file.");
         file.close();
         return false;
     }
@@ -126,7 +144,7 @@ bool FileDataBase::initFile()
     // write XML doc object to file
     QFile file(m_filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        // emit notification(tr("Couldn't open file to write."));
+        emit notification("Couldn't create new file.");
         return false;
     }
     QTextStream ts( &file );
