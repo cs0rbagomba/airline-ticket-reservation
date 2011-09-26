@@ -130,7 +130,8 @@ bool FileDataBase::loadData(const bool calculateDiff)
             bool taken(e.attribute("taken") == "1" ? true : false);
 
             if (calculateDiff) {
-                if (m_seats.find(id) == m_seats.end() || m_seats[id] != taken) {
+                if (m_seats.find(id) == m_seats.end() ||
+                    m_seats[id] != taken) {
 
                     // value has to be set before emitting the signal,
                     // since it will lead to a read call

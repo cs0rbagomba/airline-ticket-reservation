@@ -8,10 +8,12 @@ class AlgorithmTests : public QObject
     Q_OBJECT
 
 public:
+
     explicit AlgorithmTests(QObject *parent = 0);
 
 private slots:
-    void basicTest();
+
+    void testSeat();
 
 };
 
