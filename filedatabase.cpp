@@ -83,6 +83,7 @@ bool FileDataBase::readData(const QString id, bool &taken)
         return true;
     }
 
+    // data not found
     /// @note Or return writeData(id,taken) ?
     return false;
 }

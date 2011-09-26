@@ -6,7 +6,8 @@
 
 QT       += core \
             gui \
-            xml
+            xml \
+            sql
 
 TARGET   =  airline_seat_allocation
 TEMPLATE =  app
