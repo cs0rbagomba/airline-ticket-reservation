@@ -6,14 +6,16 @@
 #include <QVariant>
 #include <QDebug>
 
-MysqlDataBase::MysqlDataBase(const QString host,
+MysqlDataBase::MysqlDataBase(const QString type,
+                             const QString host,
                              const QString pass) :
+    m_type(type),
     m_host(host),
     m_pass(pass),
     m_db(0),
     m_connectionIsOpen(false)
 {
-    m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL"));
+    m_db = new QSqlDatabase(QSqlDatabase::addDatabase(type));
     m_db->setHostName(m_host);
     m_db->setDatabaseName("airlinedb");
     m_db->setUserName("airline");

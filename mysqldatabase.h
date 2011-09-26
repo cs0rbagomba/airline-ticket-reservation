@@ -8,7 +8,7 @@
  * CREATE DATABASE airlinedb;
  * SHOW DATABASES;
  * USE airlinedb;
- * GRANT ALL ON airlinedb.* TO 'airline'@'localhost' IDENTIFIED BY 'roxar';
+ * GRANT ALL ON airlinedb.* TO 'airline'@'localhost' IDENTIFIED BY 'airlinepass';
  * CREATE TABLE seats ( id varchar(255) NOT NULL UNIQUE PRIMARY KEY, taken int NOT NULL);
  */
 
@@ -23,7 +23,8 @@ class MysqlDataBase : public DataBase
     Q_OBJECT
 
 public:
-    explicit MysqlDataBase(const QString host,
+    explicit MysqlDataBase(const QString type,
+                           const QString host,
                            const QString pass);
     ~MysqlDataBase();
 
@@ -37,6 +38,7 @@ public:
 
 private:
 
+    QString m_type; // QDB2, QIBASE, QMYSQL, QOCI , QODBC, QPSQL, QSQLITE, QSQLITE2, QTDS
     QString m_host;
     QString m_pass;
     QSqlDatabase *m_db;
