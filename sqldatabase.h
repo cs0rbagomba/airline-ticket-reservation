@@ -17,7 +17,6 @@
 #include <QtSql/QSqlDatabase>
 
 
-/// @todo implement DB changed notification
 class SqlDataBase : public DataBase
 {
     Q_OBJECT
@@ -35,6 +34,10 @@ public:
     // implements DataBase::readData
     bool readData(const QString id,
                   bool &taken);
+
+private slots:
+
+    void databaseModified();
 
 private:
 

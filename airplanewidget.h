@@ -20,7 +20,8 @@ public:
 
 protected:
 
-    void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawBackground(QPainter *painter,
+                        const QRectF &rect);
 
 public slots:
 
@@ -34,6 +35,8 @@ signals:
 private:
 
     void drawAirPlane();
+    void drawSeat(const int row,
+                  const int column);
     QString idOfSeat(const Seat *seat) const;
 
     QGraphicsScene *m_scene;

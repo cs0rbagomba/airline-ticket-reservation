@@ -37,6 +37,10 @@ void Seat::paint(QPainter *painter,
 
     painter->setPen(Qt::NoPen);
 
+    // taken seats are gray
+    // free seats are blue
+    // a free seat when the mouse is over it is red
+
     if (m_taken) {
         painter->setBrush(Qt::gray);
     } else {
@@ -61,29 +65,32 @@ void Seat::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (m_taken) {
         if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-
-            QMessageBox dialog(m_airPlaneWidget);
-            dialog.setText("Really cancel reservation?");
-            dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            dialog.setDefaultButton(QMessageBox::No);
-            int ret = dialog.exec();
-            switch (ret) {
-                case QMessageBox::Yes:
-                    // Save was clicked
-                    setTaken(false);
-                    emit clicked(this);
-                    return;
-                case QMessageBox::No:
-                    // Don't Save was clicked
-                    return;
-                default:
-                    // should never be reached
-                    return;
-             }
-        } else {
-            return;
+            cancelReservationDialog();
         }
+        return;
     }
     setTaken(true);
     emit clicked(this);
+}
+
+void Seat::cancelReservationDialog()
+{
+    QMessageBox dialog(m_airPlaneWidget);
+    dialog.setText("Really cancel reservation?");
+    dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    dialog.setDefaultButton(QMessageBox::No);
+    int ret = dialog.exec();
+    switch (ret) {
+        case QMessageBox::Yes:
+            // Save was clicked
+            setTaken(false);
+            emit clicked(this);
+            return;
+        case QMessageBox::No:
+            // Don't Save was clicked
+            return;
+        default:
+            // should never be reached
+            return;
+     }
 }

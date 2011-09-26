@@ -51,7 +51,7 @@ void AirPlaneWidget::seatChanged(Seat *seat)
 
     if (!m_dataBase->writeData(id, seat->taken())) {
         // Couldn't reserve seat, reverse state
-        seat->setTaken(!(seat->taken()));
+        seat->setTaken(!seat->taken());
     }
 }
 
@@ -62,15 +62,21 @@ void AirPlaneWidget::seatChanged(QString id)
     emit notification(msg);
 
     bool taken;
-    if (!(m_dataBase->readData(id,taken))) {
+    if (!m_dataBase->readData(id,taken)) {
         // Database read error, leaving the seat as it is
     } else {
         m_seats[id]->setTaken(taken);
     }
 }
 
+/// @todo too many magic numbers
 void AirPlaneWidget::drawAirPlane()
 {
+    /** @note new QGraphicsTextItem(0) sounds like memory leak,
+      * since it has no parent to take care of the destruction,
+      * but after adding it to the scene, the scene will delete it
+      */
+
     // print help text
     QGraphicsTextItem *helpText = new QGraphicsTextItem(0);
     m_scene->addItem(helpText);
@@ -100,33 +106,39 @@ void AirPlaneWidget::drawAirPlane()
             rowNumber->setPlainText(QString(" %1").arg(row+1,2));
             rowNumber->setPos(-50, -257 + row * 22);
 
-            // draw seats
-            Seat *seat = new Seat(this);
-            m_scene->addItem(seat);
-
-            QString id(QString("%1%2").arg(row+1).arg(QChar(97+column)));
-            m_seats[id] = seat;
-
-            qreal x(-10 + column * 22);
-            if (column > 2 ) {
-                x += 30;
-            }
-            qreal y(-250 + row * 22);
-            seat->setPos(x,y);
-
-            // read state from DB
-            bool taken;
-            if (!(m_dataBase->readData(id,taken))) {
-                // Database read error
-                m_seats[id]->setTaken(false);
-            } else {
-                m_seats[id]->setTaken(taken);
-            }
-
-            connect(seat, SIGNAL(clicked(Seat*)),
-                    this, SLOT(seatChanged(Seat*)));
+            // draw seat
+            drawSeat(row, column);
         }
     }
+}
+
+void AirPlaneWidget::drawSeat(const int row,
+                              const int column)
+{
+    Seat *seat = new Seat(this);
+    m_scene->addItem(seat);
+
+    QString id(QString("%1%2").arg(row+1).arg(QChar(97+column)));
+    m_seats[id] = seat;
+
+    qreal x(-10 + column * 22);
+    if (column > 2 ) {
+        x += 30;
+    }
+    qreal y(-250 + row * 22);
+    seat->setPos(x,y);
+
+    // read state from DB
+    bool taken;
+    if (!m_dataBase->readData(id,taken)) {
+        // Database read error
+        m_seats[id]->setTaken(false);
+    } else {
+        m_seats[id]->setTaken(taken);
+    }
+
+    connect(seat, SIGNAL(clicked(Seat*)),
+            this, SLOT(seatChanged(Seat*)));
 }
 
 QString AirPlaneWidget::idOfSeat(const Seat *seat) const

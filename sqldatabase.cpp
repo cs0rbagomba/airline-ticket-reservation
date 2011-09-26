@@ -7,8 +7,8 @@
 #include <QDebug>
 
 SqlDataBase::SqlDataBase(const QString type,
-                             const QString host,
-                             const QString pass) :
+                         const QString host,
+                         const QString pass) :
     m_type(type),
     m_host(host),
     m_pass(pass),
@@ -33,6 +33,8 @@ bool SqlDataBase::writeData(const QString id, const bool taken)
 {
     QString text;
     bool dummy;
+
+    /// @todo make read&write atomic with transactions
     if (readData(id,dummy)) {
         text = QString("UPDATE seats SET taken=%2 WHERE id='%1'").arg(id).arg(taken);
     } else {
@@ -51,7 +53,7 @@ bool SqlDataBase::writeData(const QString id, const bool taken)
 bool SqlDataBase::readData(const QString id, bool &taken)
 {
     if (!m_connectionIsOpen) {
-        if (!(m_db->open())) {
+        if (!m_db->open()) {
             emit notification("Couldn't connect to DB");
             return false;
         }
@@ -74,4 +76,12 @@ bool SqlDataBase::readData(const QString id, bool &taken)
 
     // not found
     return false;
+}
+
+void SqlDataBase::databaseModified()
+{
+    /// @todo connect to event
+    /// @todo calculate diff
+
+    // emit dataChanged(id);
 }

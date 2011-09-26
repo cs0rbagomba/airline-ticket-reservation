@@ -84,7 +84,6 @@ bool FileDataBase::readData(const QString id, bool &taken)
     }
 
     // data not found
-    /// @note Or return writeData(id,taken) ?
     return false;
 }
 
@@ -92,6 +91,7 @@ void FileDataBase::fileModified(const QString& path)
 {
     Q_UNUSED(path)
 
+    // calculate diff and emit dataChanged(id) signals
     loadData(true);
 }
 
@@ -132,7 +132,8 @@ bool FileDataBase::loadData(const bool calculateDiff)
             if (calculateDiff) {
                 if (m_seats.find(id) == m_seats.end() || m_seats[id] != taken) {
 
-                    // value has to be set before emitting the signal
+                    // value has to be set before emitting the signal,
+                    // since it will lead to a read call
                     m_seats[id] = taken;
                     emit dataChanged(id);
                 }

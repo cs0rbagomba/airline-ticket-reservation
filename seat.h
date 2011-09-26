@@ -38,6 +38,8 @@ signals:
 
 private:
 
+    void cancelReservationDialog();
+
     AirPlaneWidget *m_airPlaneWidget;
     bool m_taken;
 };
