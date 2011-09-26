@@ -6,12 +6,13 @@
 
 #include "database.h"
 #include "filedatabase.h"
-#include "mysqldatabase.h"
+#include "sqldatabase.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    // DB interface
     DataBase *db;
 
     if (QApplication::arguments().size() == 1) {
@@ -19,9 +20,9 @@ int main(int argc, char *argv[])
     } else if (QApplication::arguments().size() == 2) {
         db = new FileDataBase(QApplication::arguments().at(1));
     } else if (QApplication::arguments().size() == 4) {
-        db = new MysqlDataBase(QApplication::arguments().at(1),
-                               QApplication::arguments().at(2),
-                               QApplication::arguments().at(3));
+        db = new SqlDataBase(QApplication::arguments().at(1),
+                             QApplication::arguments().at(2),
+                             QApplication::arguments().at(3));
     } else {
         QString error(QString("Usage: %1 [filename][sqltype host password]\n\n"
                               "\t filename:     XML file to save data. Default value: ~/.seats.xml"
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // dep.injection pattern
     MainWindow w(db);
     w.show();
 

@@ -19,13 +19,13 @@ SOURCES +=  main.cpp \
             seat.cpp \
             database.cpp \
             filedatabase.cpp \
-            mysqldatabase.cpp
+            sqldatabase.cpp
 
 HEADERS  += mainwindow.h \
             airplanewidget.h \
             seat.h \
             database.h \
             filedatabase.h \
-            mysqldatabase.h
+            sqldatabase.h
 
 FORMS    += mainwindow.ui

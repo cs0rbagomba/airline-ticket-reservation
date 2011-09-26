@@ -1,4 +1,4 @@
-#include "mysqldatabase.h"
+#include "sqldatabase.h"
 
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -6,7 +6,7 @@
 #include <QVariant>
 #include <QDebug>
 
-MysqlDataBase::MysqlDataBase(const QString type,
+SqlDataBase::SqlDataBase(const QString type,
                              const QString host,
                              const QString pass) :
     m_type(type),
@@ -22,14 +22,14 @@ MysqlDataBase::MysqlDataBase(const QString type,
     m_db->setPassword(m_pass);
 }
 
-MysqlDataBase::~MysqlDataBase()
+SqlDataBase::~SqlDataBase()
 {
     if (m_connectionIsOpen) {
         m_db->close();
     }
 }
 
-bool MysqlDataBase::writeData(const QString id, const bool taken)
+bool SqlDataBase::writeData(const QString id, const bool taken)
 {
     QString text;
     bool dummy;
@@ -48,7 +48,7 @@ bool MysqlDataBase::writeData(const QString id, const bool taken)
     return true;
 }
 
-bool MysqlDataBase::readData(const QString id, bool &taken)
+bool SqlDataBase::readData(const QString id, bool &taken)
 {
     if (!m_connectionIsOpen) {
         if (!(m_db->open())) {

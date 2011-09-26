@@ -1,5 +1,5 @@
-#ifndef MYSQLDATABASE_H
-#define MYSQLDATABASE_H
+#ifndef SQLDATABASE_H
+#define SQLDATABASE_H
 
 
 /**
@@ -17,16 +17,16 @@
 #include <QtSql/QSqlDatabase>
 
 
-/// @todo Re-write it SQL generic, it's just a string in the ctor...
-class MysqlDataBase : public DataBase
+/// @todo implement DB changed notification
+class SqlDataBase : public DataBase
 {
     Q_OBJECT
 
 public:
-    explicit MysqlDataBase(const QString type,
-                           const QString host,
-                           const QString pass);
-    ~MysqlDataBase();
+    explicit SqlDataBase(const QString type,
+                         const QString host,
+                         const QString pass);
+    ~SqlDataBase();
 
     // implements DataBase::writeData
     bool writeData(const QString id,
@@ -42,7 +42,7 @@ private:
     QString m_host;
     QString m_pass;
     QSqlDatabase *m_db;
-    bool m_connectionIsOpen;
+    bool m_connectionIsOpen; // lazy open
 
 };
 
