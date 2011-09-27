@@ -4,9 +4,6 @@
 #include <QDebug>
 #include <QSignalSpy>
 
-
-//#define private public
-
 #include "filedatabase.h"
 
 
