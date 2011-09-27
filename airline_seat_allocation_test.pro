@@ -15,6 +15,9 @@ TEMPLATE =  app
 
 CONFIG  += qtestlib
 
+LIBS    += -lgcov
+QMAKE_CXXFLAGS += -g -fprofile-arcs -ftest-coverage -O0
+QMAKE_LDFLAGS += -g -fprofile-arcs -ftest-coverage  -O0
 
 SOURCES +=  algorithmtests.cpp \
             mainwindow.cpp \

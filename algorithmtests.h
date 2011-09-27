@@ -14,6 +14,7 @@ public:
 private slots:
 
     void testSeat();
+    void testFileDataBase();
 
 };
 
