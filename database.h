@@ -9,7 +9,7 @@ class DataBase : public QObject
 
 public:
     explicit DataBase(QObject *parent = 0);
-    ~DataBase();
+    virtual ~DataBase();
 
     // write data to DB, return true on success
     virtual bool writeData(const QString id,
