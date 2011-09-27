@@ -53,7 +53,7 @@ bool FileDataBase::writeData(const QString id, const bool taken)
     // write back DomDocument to file
     QFile file(m_filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        emit notification("Couldn't open file to write.");
+        emit notification("Couldn't open file to write");
         return false;
     }
     QTextStream ts( &file );
@@ -107,13 +107,15 @@ bool FileDataBase::loadData(const bool calculateDiff)
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
-        emit notification("Couldn't read file.");
+        emit notification("Couldn't read file");
         return false;
     }
 
     // load DomDoc
+    qDebug("itt 1 ");
     if (!m_domDoc.setContent(&file)) {
-        emit notification("Couldn't parse XML file.");
+            qDebug("itt 2 ");
+        emit notification("Couldn't parse XML file");
         file.close();
         return false;
     }
@@ -156,7 +158,7 @@ bool FileDataBase::initFile()
     // write XML doc object to file
     QFile file(m_filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        emit notification("Couldn't create new file.");
+        emit notification("Couldn't create new file");
         return false;
     }
     QTextStream ts( &file );
