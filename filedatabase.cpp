@@ -70,12 +70,6 @@ bool FileDataBase::readData(const QString id, bool &taken)
         if (!loadData()) {
             return false;
         }
-
-        // listen to modifications
-        m_watcher.addPath(m_filePath);
-
-        connect(&m_watcher, SIGNAL(fileChanged(const QString&)),
-                this, SLOT(fileModified(const QString&)));
     }
 
     if (m_seats.find(id) != m_seats.end()) {
@@ -142,6 +136,13 @@ bool FileDataBase::loadData(const bool calculateDiff)
                 m_seats[id] = taken;
             }
         }
+    }
+
+    // file is loaded for  the first time, listen to modifications
+    if (!m_fileIsLoaded) {
+        m_watcher.addPath(m_filePath);
+        connect(&m_watcher, SIGNAL(fileChanged(const QString&)),
+                this, SLOT(fileModified(const QString&)));
     }
 
     m_fileIsLoaded = true;
