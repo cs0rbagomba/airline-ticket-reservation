@@ -36,6 +36,8 @@ void AlgorithmTests::testSeat()
     s1->setTaken(false);
     s1->mousePressEvent(0);
     QCOMPARE(s1->taken(), true);
+
+    delete s1;
 }
 
 void AlgorithmTests::testFileDataBase()

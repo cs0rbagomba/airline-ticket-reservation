@@ -51,6 +51,7 @@ valgrind \
       --num-callers=30 \
       --malloc-fill=0xaa \
       --free-fill=0xdd \
+      --suppressions=./qt47.supp \
       $test | tee $test.out; retval=$PIPESTATUS
 
 # retval is 0 on success
