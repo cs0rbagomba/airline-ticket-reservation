@@ -8,41 +8,55 @@
 #include "filedatabase.h"
 #include "sqldatabase.h"
 
+void printUsage()
+{
+    QString error(QString("Usage: %1 [filename][sqltype host password]\n\n"
+                          "\t filename:\tXML file to save data. Default value: ~/.seats.xml\n"
+                          "\t sqltype:"
+                          "\tQDB2\t\tIBM DB2\n"
+                          "\t\t\tQIBASE\t\tBorland InterBase Driver\n"
+                          "\t\t\tQMYSQL\t\tMySQL Driver\n"
+                          "\t\t\tQOCI\t\tOracle Call Interface Driver\n"
+                          "\t\t\tQODBC\t\tODBC Driver (includes Microsoft SQL Server)\n"
+                          "\t\t\tQPSQL\t\tPostgreSQL Driver\n"
+                          "\t\t\tQSQLITE\t\tSQLite version 3 or above\n"
+                          "\t\t\tQSQLITE2\tSQLite version 2\n"
+                          "\t\t\tQTDS").arg(QApplication::arguments().at(0)));
+
+    std::cerr << error.toStdString() << std::endl;
+}
+
+DataBase* dataBaseFactory()
+{
+    if (QApplication::arguments().size() == 1) {
+        return new FileDataBase(QString("%1/.seats.xml").arg(QDir::homePath()));
+    }
+
+    if (QApplication::arguments().size() == 2) {
+        return new FileDataBase(QApplication::arguments().at(1));
+    }
+
+    if (QApplication::arguments().size() == 4) {
+        return new SqlDataBase(QApplication::arguments().at(1),
+                             QApplication::arguments().at(2),
+                             QApplication::arguments().at(3));
+    }
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // DB interface
-    DataBase *db;
-
-    if (QApplication::arguments().size() == 1) {
-        db = new FileDataBase(QString("%1/.seats.xml").arg(QDir::homePath()));
-    } else if (QApplication::arguments().size() == 2) {
-        db = new FileDataBase(QApplication::arguments().at(1));
-    } else if (QApplication::arguments().size() == 4) {
-        db = new SqlDataBase(QApplication::arguments().at(1),
-                             QApplication::arguments().at(2),
-                             QApplication::arguments().at(3));
-    } else {
-        QString error(QString("Usage: %1 [filename][sqltype host password]\n\n"
-                              "\t filename:     XML file to save data. Default value: ~/.seats.xml"
-                              "\t sqltype:\n"
-                              "\t\tQDB2	IBM DB2\n"
-                              "\t\tQIBASE	Borland InterBase Driver\n"
-                              "\t\tQMYSQL	MySQL Driver\n"
-                              "\t\tQOCI	Oracle Call Interface Driver\n"
-                              "\t\tQODBC	ODBC Driver (includes Microsoft SQL Server)\n"
-                              "\t\tQPSQL	PostgreSQL Driver\n"
-                              "\t\tQSQLITE	SQLite version 3 or above\n"
-                              "\t\tQSQLITE2	SQLite version 2\n"
-                              "\t\tQTDS").
-               arg(QApplication::arguments().at(0)));
-
-        std::cerr << error.toStdString() << std::endl;
+    // factory method
+    DataBase *db = dataBaseFactory();
+    if (!db) {
+        printUsage();
         return 1;
     }
 
-    // dep.injection pattern
+    // dependency injection
     MainWindow w(db);
     w.show();
 

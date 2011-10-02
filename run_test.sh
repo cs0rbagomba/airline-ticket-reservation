@@ -94,7 +94,7 @@ echo -e "${pre}Filtering coverage tracefile${post}"
 lcov -r lcov.info "g++-v*" -o lcov.info
 lcov -r lcov.info "qt4*" -o lcov.info
 lcov -r lcov.info "*build*" -o lcov.info
-
+lcov -r lcov.info "*algorithmtests.*" -o lcov.info
 
 
 echo -e "${pre}Generating coverage HTML${post}"
