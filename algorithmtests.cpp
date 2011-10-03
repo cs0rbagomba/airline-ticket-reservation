@@ -4,6 +4,9 @@
 #include <QDebug>
 #include <QSignalSpy>
 
+// FileDataBase::fileModified is private
+#define private public
+
 #include "filedatabase.h"
 
 
@@ -198,6 +201,37 @@ void AlgorithmTests::testFileDataBase()
                  QString("Couldn't open file to write"));
 
         file.remove();
+    }
+
+    /// file modified
+    {
+        QFile file(QString("%1/modified.xml").arg(QDir::tempPath()));
+        file.remove();
+        file.open(QIODevice::WriteOnly);
+        QTextStream ts(&file);
+        ts << QString("<!DOCTYPE AirLine_Seat_Allocation>\n"
+                      "<Seats/>\n");
+        file.close();
+
+        FileDataBase db(QString("%1/modified.xml").arg(QDir::tempPath()));
+        QSignalSpy spy(&db, SIGNAL(notification(const QString)));
+
+        QCOMPARE(db.readData("12a",taken), false);
+        QCOMPARE(taken, false);
+        QCOMPARE(spy.count(), 0);
+
+        file.open(QIODevice::WriteOnly);
+        ts << QString("<!DOCTYPE AirLine_Seat_Allocation>\n"
+                      "<Seats>\n"
+                      " <seat id=\"12a\" taken=\"0\"/>\n"
+                      "</Seats>\n");
+        file.close();
+
+        /// @note Why fileModified is not called?! Baaad FileSystemWatcher
+        db.fileModified("ignored");
+
+        QCOMPARE(db.readData("12a",taken), true);
+        QCOMPARE(taken, false);
     }
 }
 
