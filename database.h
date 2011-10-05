@@ -8,6 +8,7 @@ class DataBase : public QObject
     Q_OBJECT
 
 public:
+
     explicit DataBase(QObject *parent = 0);
     virtual ~DataBase();
 
@@ -18,6 +19,8 @@ public:
     // read data from DB, return true on success
     virtual bool readData(const QString id,
                           bool &taken) = 0;
+
+    static DataBase* create();
 
 signals:
 
